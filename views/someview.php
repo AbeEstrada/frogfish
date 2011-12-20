@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>phpmvc</title>
+    <title>frogfish</title>
 </head>
 <body>
     <h1>Hello From the View</h1>

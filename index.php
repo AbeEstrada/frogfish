@@ -17,8 +17,10 @@ class App extends Frogfish {
     public function input() {
         if ($_POST) {
             echo 'POST '.$this->input->post('name');
-        } else {
+        } else if (isset($_GET['name'])) {
             echo 'GET '.$this->input->get('name');
+        } else {
+            echo 'GET';
         }
     }
 }

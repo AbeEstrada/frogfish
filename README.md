@@ -1,11 +1,11 @@
 Frogfish
 ============
 
-A small PHP framework to create fast sites with the minimal code inspired by Codeigniter.
+A PHP microframework to create fast sites with the minimal code.
 
-####Features
+Update: Redesigned to be a one file framework.
 
-* MVC Architecture
+###Features
 * Nice URLs
 
 

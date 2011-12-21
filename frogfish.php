@@ -1,4 +1,13 @@
 <?php
+/**
+ * --------------------------------------------------------------------------------
+ * "THE BEER-WARE LICENSE" (Revision 42) http://people.freebsd.org/~phk/
+ * <abraham.estrada@gmail.com> wrote this file. As long as you retain this notice
+ * you can do whatever you want with this stuff. If we meet some day, and you think
+ * this stuff is worth it, you can buy me a beer in return Abraham Estrada
+ * --------------------------------------------------------------------------------
+ */
+ 
 class Frogfish {
     private $_config = array();
     private $_url = array();
@@ -97,7 +106,6 @@ class FrogfishInput { // Return sanitized data
         } else {
             $input = trim($input);
             $input = (get_magic_quotes_gpc()) ? stripslashes($input) : $input ;
-            //$input = mysql_escape_string($input);
             $output = htmlentities($input, ENT_QUOTES, 'UTF-8');
         }
         return $output;

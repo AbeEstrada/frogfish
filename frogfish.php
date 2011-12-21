@@ -18,34 +18,34 @@ class Frogfish {
     
     private function _router() {
         if (isset($_SERVER['PATH_INFO'])) {
-            preg_match_all('/(\$?)(\w+|\*)/', $_SERVER['PATH_INFO'], $urls, PREG_PATTERN_ORDER);
+            preg_match_all('/(\$?)(\w+|\*)/', $_SERVER['PATH_INFO'], $urls, PREG_PATTERN_ORDER); // Get the url
             $this->_url = $urls[0];
         }
         
         $match = false;
         
         if (!array_key_exists('/', $this->_routes)) {
-            $this->_routes['/'] = 'index';
+            $this->_routes['/'] = 'index'; // Default action
         }
         
-        if (count($this->_url) == 1 && empty($this->_url[0])) {
+        if (count($this->_url) == 1 && empty($this->_url[0])) { // Home
             $match = true;
             $this->_action = strtolower($this->_routes['/']);
         } else {
             $params = array();
             
             foreach ($this->_routes as $url => $action) {
-                preg_match_all('/(\$?)(\w+|\*)/', $url, $route, PREG_PATTERN_ORDER);
+                preg_match_all('/(\$?)(\w+|\*)/', $url, $route, PREG_PATTERN_ORDER); // Get routes
                 $route = $route[0];
                 
-                if (count($this->_url) <= count($route) || end($route) == '*') {
+                if (count($this->_url) <= count($route) || end($route) == '*') { // Get the number of parameters required
                     if (end($route) == '*') {
                         $last = count($route)-1;
                         unset($route[$last]);
                     }
                     
                     $matches = 0;
-                    for ($i=0; $i < count($route); $i++) { 
+                    for ($i=0; $i < count($route); $i++) { // Compare parameters
                         if (isset($this->_url[$i]) && $route[$i] == $this->_url[$i]) {
                             $matches++;
                         } else if (isset($this->_url[$i]) && substr($route[$i], 0, 1) == '$') {
@@ -65,7 +65,7 @@ class Frogfish {
         
         if ($match) {
             if (is_callable(array($this, $this->_action)) && substr($this->_action, 0, 1) != '_') {
-                call_user_func_array(array($this, $this->_action), $params);
+                call_user_func_array(array($this, $this->_action), $params); // Method call
             } else {
                 $this->_error(404);
             }
@@ -88,7 +88,7 @@ class Frogfish {
     }
 }
 
-class FrogfishInput {
+class FrogfishInput { // Return sanitized data
     private function xss_clean($input) {
         if (is_array($input)) {
             foreach($input as $var => $val) {

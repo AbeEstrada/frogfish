@@ -1,7 +1,7 @@
 <?php
 class Frogfish {
-    private $config;
-    private $urls = array();
+    private $config = array();
+    private $url = array();
     private $routes = array();
     private $action;
     
@@ -12,15 +12,13 @@ class Frogfish {
         $this->router();
     }
     
-    private function url() {
-        if (isset($_SERVER['PATH_INFO'])) {
-            $this->urls = explode('/', $_SERVER['PATH_INFO']);
-            array_shift($this->urls);
-        }
-    }
-    
     private function router() {
-        $this->url();
+        if (isset($_SERVER['PATH_INFO'])) {
+            preg_match_all('/(\$?)(\w+|\*)/', $_SERVER['PATH_INFO'], $urls, PREG_PATTERN_ORDER);
+            $this->url = $urls[0];
+        }
+        
+        //print_r($this->url);
         
         $match = false;
         
@@ -28,7 +26,7 @@ class Frogfish {
             $this->routes['/'] = 'index';
         }
         
-        if (count($this->urls) == 1 && empty($this->urls[0])) {
+        if (count($this->url) == 1 && empty($this->url[0])) {
             $match = true;
             $this->action = $this->routes['/'];
         } else {
@@ -38,7 +36,7 @@ class Frogfish {
                 preg_match_all('/(\$?)(\w+|\*)/', $url, $route, PREG_PATTERN_ORDER);
                 $route = $route[0];
                 
-                if (count($this->urls) <= count($route) || end($route) == '*') {
+                if (count($this->url) <= count($route) || end($route) == '*') {
                     if (end($route) == '*') {
                         $last = count($route)-1;
                         unset($route[$last]);
@@ -46,10 +44,11 @@ class Frogfish {
                     
                     $matches = 0;
                     for ($i=0; $i < count($route); $i++) { 
-                        if (isset($this->urls[$i]) && $route[$i] == $this->urls[$i]) {
+                        if (isset($this->url[$i]) && $route[$i] == $this->url[$i]) {
                             $matches++;
-                        } else if (isset($this->urls[$i]) && substr($route[$i], 0, 1) == '$') {
+                        } else if (isset($this->url[$i]) && substr($route[$i], 0, 1) == '$') {
                             $matches++;
+                            array_push($params, $this->url[$i]);
                         }
                     }
                     
@@ -64,7 +63,7 @@ class Frogfish {
         
         if ($match) {
             if (is_callable(array($this, $this->action)) && substr($this->action, 0, 1) != '_') {
-                call_user_func_array(array($this, $this->action), array());
+                call_user_func_array(array($this, $this->action), $params);
             } else {
                 $this->error(404);
             }

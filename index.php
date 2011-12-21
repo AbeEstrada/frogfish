@@ -10,7 +10,7 @@ class App extends Frogfish {
         echo 'This is a test';
     }
     
-    public function hello($name, $age) {
+    public function hello($name, $age=null) {
         echo 'Hello '.$name.', your age is '.$age;
     }
 
@@ -18,6 +18,7 @@ class App extends Frogfish {
 
 new App(array(
     '/' => 'home',
+    '/hello/$name' => 'hello',
     '/hello/$name/$age' => 'hello',
     '/test' => 'test'
 ));

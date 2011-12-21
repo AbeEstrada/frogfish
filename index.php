@@ -13,12 +13,20 @@ class App extends Frogfish {
     public function hello($name, $age=null) {
         echo 'Hello '.$name.', your age is '.$age;
     }
-
+    
+    public function input() {
+        if ($_POST) {
+            echo 'POST '.$this->input->post('name');
+        } else {
+            echo 'GET '.$this->input->get('name');
+        }
+    }
 }
 
 new App(array(
     '/' => 'home',
     '/hello/$name' => 'hello',
     '/hello/$name/$age' => 'hello',
-    '/test' => 'test'
+    '/test' => 'test',
+    '/data' => 'input'
 ));

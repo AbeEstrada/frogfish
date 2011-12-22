@@ -111,12 +111,19 @@ class FrogfishInput { // Return sanitized data
         return $output;
     }
     public function get($input) {
-        $output = $this->xss_clean($_GET[$input]);
-        return $output;
+        return $this->fetch($_GET, $input);
     }
     
     public function post($input) {
-        $output = $this->xss_clean($_POST[$input]);
+        return $this->fetch($_POST, $input);
+    }
+    
+    private function fetch($data, $input) {
+        if (isset($data[$input])) {
+            $output = $this->xss_clean($data[$input]);
+        } else {
+            $output = false;
+        }
         return $output;
     }
 }

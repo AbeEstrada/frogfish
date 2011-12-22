@@ -25,7 +25,7 @@ class App extends Frogfish {
     }
 }
 
-new App(array(
+new App(array( // Format: route => function
     '/' => 'home',
     '/hello/$name' => 'hello',
     '/hello/$name/$age' => 'hello',

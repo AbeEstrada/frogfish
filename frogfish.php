@@ -25,7 +25,7 @@ class Frogfish {
         $this->_config = $config;
         $this->_routes = $routes;
         
-        $this->load = new FrogfishLoad();
+        $this->load = new FrogfishLoader();
         $this->input = new FrogfishInput();
         
         $this->_router();
@@ -108,16 +108,24 @@ class Frogfish {
     }
 }
 
-class FrogfishLoad {
-    public function view($filename='index.php', $data=null) {
-        if (substr($filename, -4) != '.php' || substr($filename, -4) != '.html') {
-            $filename = $filename.'.php';
+class FrogfishLoader {
+    public function view($file='index.php', $data=null) {
+        if (substr($file, -4) != '.php' || substr($file, -4) != '.html') {
+            $file = $file.'.php';
         }
-        if (is_array($data)) {
-            extract($data);
+        if (file_exists($file)) {
+            if (is_array($data)) {
+                extract($data);
+            }
+            ob_start();
+            include_once $file;
+            $output = ob_get_contents();
+            ob_end_clean();
+            
+            echo $output;
+        } else {
+            throw new Exception('File not found');
         }
-        ob_start();
-        include_once $filename;
     }
 }
 

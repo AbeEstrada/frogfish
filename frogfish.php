@@ -12,6 +12,7 @@ class Frogfish {
     private $_routes = array();
     private $_action;
     
+    protected $load;
     protected $input;
     
     /**
@@ -24,6 +25,7 @@ class Frogfish {
         $this->_config = $config;
         $this->_routes = $routes;
         
+        $this->load = new FrogfishLoad();
         $this->input = new FrogfishInput();
         
         $this->_router();
@@ -31,7 +33,7 @@ class Frogfish {
     
     private function _router() {
         if (isset($_SERVER['PATH_INFO'])) {
-            preg_match_all('/(\$?)(\w+|\*)/', $_SERVER['PATH_INFO'], $urls, PREG_PATTERN_ORDER); // Get the url
+            preg_match_all('/(\$?)(\w+|\*)/', $_SERVER['PATH_INFO'], $urls, PREG_PATTERN_ORDER); // Dissect the url
             $this->_url = $urls[0];
         }
         
@@ -87,6 +89,11 @@ class Frogfish {
         }
     }
     
+    /**
+     * Error handler.
+     *
+     * @param int $e HTTP Error Code
+     */
     private function _error($e) {
         switch ($e) {
             case 404:
@@ -98,6 +105,19 @@ class Frogfish {
                 header('HTTP/1.1 500 Internal Server Error');
                 break;
         }
+    }
+}
+
+class FrogfishLoad {
+    public function view($filename='index.php', $data=null) {
+        if (substr($filename, -4) != '.php' || substr($filename, -4) != '.html') {
+            $filename = $filename.'.php';
+        }
+        if (is_array($data)) {
+            extract($data);
+        }
+        ob_start();
+        include_once $filename;
     }
 }
 
@@ -114,6 +134,7 @@ class FrogfishInput { // Return sanitized data
         }
         return $output;
     }
+    
     public function get($input) {
         return $this->fetch($_GET, $input);
     }

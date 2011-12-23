@@ -82,29 +82,31 @@ class Frogfish {
             if (is_callable(array($this, $this->_action)) && substr($this->_action, 0, 1) != '_') {
                 call_user_func_array(array($this, $this->_action), $params); // Method call
             } else {
-                $this->_error(404);
+                $this->_response(404);
             }
         } else {
-            $this->_error(404);
+            $this->_response(404);
         }
     }
     
     /**
-     * Error handler.
+     * HTTP Response.
      *
-     * @param int $e HTTP Error Code
+     * @param int $type HTTP Code
      */
-    private function _error($e) {
-        switch ($e) {
-            case 404:
-                header('HTTP/1.0 404 Not Found');
-                break;
-                
-            case 500:
-            default:
-                header('HTTP/1.1 500 Internal Server Error');
-                break;
-        }
+    private function _response($type=500) {
+        $codes = array(
+            200 => 'OK - The request is OK',
+            301 => 'Moved Permanently - The requested page has moved to a new url',
+            304 => 'Not Modified',
+            307 => 'Temporary Redirect - The requested page has moved temporarily to a new url',
+            400 => 'Bad Request - The server did not understand the request',
+            401 => 'Unauthorized - The requested page needs a username and a password',
+            404 => 'Not Found - The server can not find the requested page',
+            405 => 'Method Not Allowed - The method specified in the request is not allowed',
+            500 => 'Internal Server Error - The request was not completed. The server met an unexpected condition'
+        );
+        header('HTTP/1.0 '.$type.' '.$codes[$type]);
     }
 }
 

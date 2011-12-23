@@ -23,6 +23,10 @@ class App extends Frogfish {
             echo 'GET';
         }
     }
+    
+    public function views() {
+        $this->load->view('views/home', array('nice'=>'like this one.'));
+    }
 }
 
 new App(array( // Format: route => function
@@ -30,5 +34,6 @@ new App(array( // Format: route => function
     '/hello/$name' => 'hello',
     '/hello/$name/$age' => 'hello',
     '/test' => 'test',
-    '/data' => 'input'
+    '/data' => 'input',
+    '/views' => 'views'
 ));

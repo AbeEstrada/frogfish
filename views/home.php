@@ -1,0 +1,1 @@
+It can be a .HTML or .PHP file with variables <?php echo $nice; ?>

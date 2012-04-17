@@ -1,12 +1,9 @@
 Frogfish
 ============
 
-A PHP micro-framework to create fast web sites with the minimal code.
+A PHP micro-framework to create fast web sites with less code.
 
 ###Features
 * Nice URLs
 * Views
-
-
-###To Do's
 * Data validation

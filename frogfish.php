@@ -135,7 +135,7 @@ class FrogfishInput { // Return sanitized data
     private function xss_clean($input) {
         if (is_array($input)) {
             foreach($input as $var => $val) {
-                $output[$var] = xss_clean($val);
+                $output[$var] = $this->xss_clean($val);
             }
         } else {
             $input = trim($input);

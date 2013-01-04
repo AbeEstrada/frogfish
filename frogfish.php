@@ -11,10 +11,10 @@ class Frogfish {
     private $_url = array();
     private $_routes = array();
     private $_action;
-    
+
     protected $load;
     protected $input;
-    
+
     /**
      * Constructor.
      *
@@ -24,41 +24,41 @@ class Frogfish {
     public function __construct($routes, $config=array()) {
         $this->_config = $config;
         $this->_routes = $routes;
-        
+
         $this->load = new FrogfishLoader();
         $this->input = new FrogfishInput();
-        
+
         $this->_router();
     }
-    
+
     private function _router() {
         if (isset($_SERVER['PATH_INFO'])) {
             preg_match_all('/(\$?)(\w+|\*)/', $_SERVER['PATH_INFO'], $urls, PREG_PATTERN_ORDER); // Dissect the url
             $this->_url = $urls[0];
         }
-        
+
         $match = false;
-        
+
         if (!array_key_exists('/', $this->_routes)) {
             $this->_routes['/'] = 'index'; // Default action
         }
-        
+
         if (count($this->_url) == 1 && empty($this->_url[0])) { // Home
             $match = true;
             $this->_action = strtolower($this->_routes['/']);
         } else {
             $params = array();
-            
+
             foreach ($this->_routes as $url => $action) {
                 preg_match_all('/(\$?)(\w+|\*)/', $url, $route, PREG_PATTERN_ORDER); // Get routes
                 $route = $route[0];
-                
+
                 if (count($this->_url) <= count($route) || end($route) == '*') { // Get the number of parameters required
                     if (end($route) == '*') {
                         $last = count($route)-1;
                         unset($route[$last]);
                     }
-                    
+
                     $matches = 0;
                     for ($i=0; $i < count($route); $i++) { // Compare parameters
                         if (isset($this->_url[$i]) && $route[$i] == $this->_url[$i]) {
@@ -68,7 +68,7 @@ class Frogfish {
                             array_push($params, $this->_url[$i]);
                         }
                     }
-                    
+
                     if (count($route) == $matches) {
                         $match = true;
                         $this->_action = strtolower($action);
@@ -77,7 +77,7 @@ class Frogfish {
                 }
             }
         }
-        
+
         if ($match) {
             if (is_callable(array($this, $this->_action)) && substr($this->_action, 0, 1) != '_') {
                 call_user_func_array(array($this, $this->_action), $params); // Method call
@@ -88,7 +88,7 @@ class Frogfish {
             $this->_response(404);
         }
     }
-    
+
     /**
      * HTTP Response.
      *
@@ -112,7 +112,7 @@ class Frogfish {
 
 class FrogfishLoader {
     public function view($file='index.php', $data=null) {
-        if (substr($file, -4) != '.php' || substr($file, -4) != '.html') {
+        if (substr($file, -4) != '.php' && substr($file, -5) != '.html') {
             $file = $file.'.php';
         }
         if (file_exists($file)) {
@@ -123,7 +123,7 @@ class FrogfishLoader {
             include_once $file;
             $output = ob_get_contents();
             ob_end_clean();
-            
+
             echo $output;
         } else {
             throw new Exception('File not found');
@@ -144,15 +144,15 @@ class FrogfishInput { // Return sanitized data
         }
         return $output;
     }
-    
+
     public function get($input) {
         return $this->fetch($_GET, $input);
     }
-    
+
     public function post($input) {
         return $this->fetch($_POST, $input);
     }
-    
+
     private function fetch($data, $input) {
         if (isset($data[$input])) {
             $output = $this->xss_clean($data[$input]);
